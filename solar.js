@@ -8,7 +8,7 @@ canvas.height = window.innerHeight;
 var midX = canvas.width / 2;
 var midY = canvas.height / 2; 
 
-var earthMass = 5.972 * Math.pow(10, 24);
+var earthMass = 10; //5.972 * Math.pow(10, 24);
 var gravConst = 6.67 * Math.pow(10, -11);
 
 
@@ -36,14 +36,13 @@ Vector.fromAngle = function (angle, magnitude) {
 };
 
 // Body ////////////////////////////////////////////////////////////////////////
-
 // celestial body mass is in units of earthMass
 function CelestialBody(position, velocity, acceleration, relMass, size, color) {
 	this.position = position || new Vector(midX, midY); // A vector co-ordinate
 	this.velocity = velocity || new Vector(0,0); 
 	this.acceleration = acceleration || new Vector(0,0); 
 	this.relMass = relMass || 1; // Mass in earth mass where 1 = 1* earth mass
-	this.actualMass = relMass * 10; 
+	this.actualMass = relMass * earthMass; 
 	this.size = size || 1;
 	this.color = color || '#999';
 }
@@ -62,8 +61,8 @@ CelestialBody.prototype.applyForces = function(bodies){
   		var distX = body.position.x - this.position.x;
   		var distY = body.position.y - this.position.y;
 
-  		// calculate the force G * m1 * m2 / d^2
-  		var force = body.actualMass / Math.pow(distX*distX + distY*distY, 1.5);
+  		// calculate the force         
+  		var force = body.actualMass / Math.pow(distX*distX + distY*distY, 1.5); // TODO update be F = G * m1 * m2 / d^2
 
   		// calculate acceleration
   		totalAccelerationX += distX * force;
@@ -76,6 +75,11 @@ CelestialBody.prototype.move = function() {
 	this.velocity.add(this.acceleration);
 	this.position.add(this.velocity);
 };
+
+
+// Asteroids ////////////////////////////////////////////////////////////////////
+
+
 
 // Update /////////////////////////////////////////////////////////////////////////
 function plotBodies(boundsX, boundsY) {
